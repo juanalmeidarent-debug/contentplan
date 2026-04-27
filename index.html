@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Content Calendar — WAFS & BTE · May 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --wafs: #1B3F6E; --wafs-light: #EAF0F9; --wafs-accent: #2F6FC4;
+    --bte: #7A1515; --bte-light: #F9EAEA; --bte-accent: #B03030;
+    --bg: #F4F2ED; --white: #FFFFFF; --text: #1A1A1A; --muted: #777; --border: #E0DCD5;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Outfit', sans-serif; background: var(--bg); color: var(--text); }
+
+  .hero { display: none; }
+
+  /* SLIM HEADER */
+  .slim-header { background: #0F1E35; height: 52px; display: flex; align-items: center; position: sticky; top: 0; z-index: 200; box-shadow: 0 2px 10px rgba(0,0,0,0.25); }
+  .slim-header-inner { max-width: 1200px; margin: 0 auto; padding: 0 40px; display: flex; align-items: center; justify-content: space-between; width: 100%; gap: 24px; }
+  .header-logo { height: 32px; width: auto; object-fit: contain; display: block; flex-shrink: 0; }
+  .header-logo.hidden { display: none; }
+  .header-brand-name { font-size: 13px; font-weight: 600; color: rgba(255,255,255,0.85); white-space: nowrap; }
+  .header-sep { width: 1px; height: 20px; background: rgba(255,255,255,0.15); flex-shrink: 0; }
+  .header-stats { display: flex; gap: 20px; align-items: center; }
+  .hstat { display: flex; align-items: center; gap: 6px; font-size: 11px; color: rgba(255,255,255,0.5); white-space: nowrap; }
+  .hstat strong { color: rgba(255,255,255,0.85); font-weight: 600; }
+  .slim-right { font-size: 10px; color: rgba(255,255,255,0.35); letter-spacing: 0.2em; text-transform: uppercase; white-space: nowrap; }
+
+  /* BRAND SWITCHER */
+  .brand-switcher { background: var(--white); border-bottom: 1px solid var(--border); padding: 20px 48px; display: flex; align-items: center; justify-content: center; gap: 0; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
+  .switch-label { font-size: 11px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted); margin-right: 20px; }
+  .switch-track { display: flex; background: var(--bg); border: 1px solid var(--border); border-radius: 100px; padding: 4px; gap: 4px; }
+  .tab-btn { padding: 12px 28px; border-radius: 100px; font-size: 14px; font-weight: 600; cursor: pointer; border: none; background: transparent; font-family: 'Outfit', sans-serif; color: var(--muted); transition: all 0.25s; white-space: nowrap; }
+  .tab-btn.wafs.active { background: var(--wafs); color: white; box-shadow: 0 3px 12px rgba(27,63,110,0.35); }
+  .tab-btn.bte.active { background: var(--bte); color: white; box-shadow: 0 3px 12px rgba(122,21,21,0.35); }
+
+  .panel { display: none; }
+  .panel.active { display: block; }
+
+  .pos-bar { max-width: 1200px; margin: 0 auto; padding: 28px 48px 16px; display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .pos-card { border-radius: 12px; padding: 20px 24px; }
+  .pos-card.wafs { background: var(--wafs); }
+  .pos-card.wafs-alt { background: var(--wafs-accent); }
+  .pos-card.bte { background: var(--bte); }
+  .pos-card.bte-alt { background: var(--bte-accent); }
+  .pos-tag { display: inline-block; font-size: 10px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; padding: 4px 10px; border-radius: 20px; background: rgba(255,255,255,0.15); color: rgba(255,255,255,0.8); margin-bottom: 10px; }
+  .pos-card h4 { font-family: 'Playfair Display', serif; font-size: 17px; color: white; margin-bottom: 6px; }
+  .pos-card p { font-size: 12px; color: rgba(255,255,255,0.65); line-height: 1.55; font-weight: 300; }
+
+  .legend { max-width: 1200px; margin: 0 auto; padding: 14px 48px; display: flex; gap: 20px; flex-wrap: wrap; align-items: center; border-bottom: 1px solid var(--border); }
+  .legend-title { font-size: 10px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted); }
+  .leg { display: flex; align-items: center; gap: 5px; font-size: 11px; color: var(--muted); }
+  .leg-dot { width: 10px; height: 10px; border-radius: 3px; }
+  .leg-video { background: #3B7DD8; }
+  .leg-art { background: #C47A1A; }
+  .leg-icon { width: 14px; height: 14px; border-radius: 3px; display:inline-flex; align-items:center; justify-content:center; }
+
+  .cal-wrap { max-width: 1200px; margin: 0 auto; padding: 20px 48px 60px; }
+  .cal-month-title { font-family: 'Playfair Display', serif; font-size: 26px; margin-bottom: 16px; color: var(--text); }
+  .cal-header { display: grid; grid-template-columns: repeat(7,1fr); gap: 3px; margin-bottom: 3px; }
+  .cal-day-name { text-align: center; font-size: 10px; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); padding: 8px 0; }
+  .cal-grid { display: grid; grid-template-columns: repeat(7,1fr); gap: 3px; }
+  .cal-cell { background: var(--white); border: 1px solid var(--border); border-radius: 8px; min-height: 128px; padding: 10px 8px; }
+  .cal-cell.empty { background: rgba(244,242,237,0.5); border-color: transparent; }
+  .cell-num { font-size: 12px; font-weight: 700; color: var(--muted); margin-bottom: 8px; width: 22px; height: 22px; display: flex; align-items: center; justify-content: center; border-radius: 50%; }
+  .wafs-panel .cell-num.has-post { background: var(--wafs); color: white; }
+  .bte-panel .cell-num.has-post { background: var(--bte); color: white; }
+
+  .post-chip { border-radius: 6px; padding: 7px 8px; margin-bottom: 5px; cursor: pointer; transition: transform 0.15s, box-shadow 0.15s; display: block; width: 100%; text-align: left; border: none; font-family: 'Outfit', sans-serif; }
+  .post-chip:hover { transform: translateY(-1px); box-shadow: 0 3px 10px rgba(0,0,0,0.1); }
+  .chip-video { background: #E8F0FB; border-left: 3px solid #3B7DD8; }
+  .chip-art { background: #FBF3E8; border-left: 3px solid #C47A1A; }
+  .chip-top { display: flex; align-items: center; gap: 4px; margin-bottom: 3px; flex-wrap: wrap; }
+  .chip-tag { font-size: 9px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; }
+  .chip-video .chip-tag { color: #3B7DD8; }
+  .chip-art .chip-tag { color: #C47A1A; }
+  .chip-slides { font-size: 9px; font-weight: 600; color: #2E8B57; background: #E8F5EE; padding: 1px 5px; border-radius: 8px; }
+  .chip-title { font-size: 10px; font-weight: 600; line-height: 1.3; color: var(--text); margin-bottom: 4px; }
+  .chip-format { font-size: 9px; color: var(--muted); margin-bottom: 4px; }
+  .chip-icons { display: flex; gap: 3px; margin-top: 4px; }
+  .soc { width: 15px; height: 15px; border-radius: 3px; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .soc svg { width: 9px; height: 9px; fill: white; }
+  .soc-fb { background: #1877F2; }
+  .soc-li { background: #0A66C2; }
+  .soc-yt { background: #FF0000; }
+
+  .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 1000; display: none; align-items: center; justify-content: center; padding: 20px; backdrop-filter: blur(3px); }
+  .modal-overlay.open { display: flex; }
+  .modal { background: var(--white); border-radius: 16px; padding: 36px; max-width: 500px; width: 100%; position: relative; box-shadow: 0 24px 64px rgba(0,0,0,0.2); max-height: 88vh; overflow-y: auto; }
+  .modal-close { position: absolute; top: 14px; right: 14px; background: var(--bg); border: none; width: 30px; height: 30px; border-radius: 50%; cursor: pointer; font-size: 14px; color: var(--muted); display: flex; align-items: center; justify-content: center; }
+  .modal-meta { font-size: 11px; color: var(--muted); font-weight: 500; margin-bottom: 10px; }
+  .modal-tags { display: flex; gap: 6px; margin-bottom: 14px; flex-wrap: wrap; }
+  .mtag { font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; padding: 4px 10px; border-radius: 20px; }
+  .mtag.video { background: #E8F0FB; color: #3B7DD8; }
+  .mtag.art { background: #FBF3E8; color: #C47A1A; }
+  .mtag.slides { background: #E8F5EE; color: #2E8B57; }
+  .mtag.wafs { background: var(--wafs-light); color: var(--wafs); }
+  .mtag.bte { background: var(--bte-light); color: var(--bte); }
+  .modal-title { font-family: 'Playfair Display', serif; font-size: 20px; line-height: 1.3; margin-bottom: 24px; }
+  .modal-section { margin-bottom: 18px; }
+  .modal-section-label { font-size: 9px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; display: block; margin-bottom: 8px; }
+  .wafs-panel .modal-section-label { color: var(--wafs-accent); }
+  .bte-panel .modal-section-label { color: var(--bte-accent); }
+  .modal-hook { background: var(--bg); border-left: 3px solid; border-radius: 0 8px 8px 0; padding: 12px 14px; font-size: 13px; line-height: 1.6; font-style: italic; color: #555; }
+  .wafs-panel .modal-hook { border-color: var(--wafs-accent); }
+  .bte-panel .modal-hook { border-color: var(--bte-accent); }
+  .modal-cta { font-size: 13px; color: var(--text); line-height: 1.5; display: flex; gap: 8px; }
+  .modal-cta::before { content: '→'; font-weight: 700; flex-shrink: 0; }
+  .wafs-panel .modal-cta::before { color: var(--wafs-accent); }
+  .bte-panel .modal-cta::before { color: var(--bte-accent); }
+  .modal-plats { display: flex; gap: 8px; flex-wrap: wrap; }
+  .modal-plat { display: flex; align-items: center; gap: 5px; font-size: 11px; color: var(--muted); background: var(--bg); padding: 4px 10px; border-radius: 20px; }
+  .modal-plat .soc { width: 14px; height: 14px; }
+  .modal-plat .soc svg { width: 8px; height: 8px; }
+</style>
+</head>
+<body>
+
+<div class="modal-overlay" id="modal" onclick="closeOut(event)">
+  <div class="modal" id="modal-box">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <div class="modal-meta" id="m-meta"></div>
+    <div class="modal-tags" id="m-tags"></div>
+    <div class="modal-title" id="m-title"></div>
+    <div class="modal-section"><span class="modal-section-label">Hook</span><div class="modal-hook" id="m-hook"></div></div>
+    <div class="modal-section"><span class="modal-section-label">CTA</span><div class="modal-cta" id="m-cta"></div></div>
+    <div class="modal-section"><span class="modal-section-label">Platforms</span><div class="modal-plats" id="m-plats"></div></div>
+  </div>
+</div>
+
+<!-- SLIM HEADER -->
+<div class="slim-header">
+  <div class="slim-header-inner">
+    <div style="display:flex;align-items:center;gap:14px;flex-shrink:0">
+      <img id="header-logo-wafs" class="header-logo" src="/mnt/user-data/uploads/woodson_logo_high_res.png" alt="WAFS" style="filter:brightness(0) invert(1);">
+      <img id="header-logo-bte" class="header-logo hidden" src="/mnt/user-data/uploads/biztax_logo_high_res.png" alt="BTE" style="filter:brightness(0) invert(1);">
+    </div>
+    <div class="header-sep"></div>
+    <div class="header-stats">
+      <div class="hstat"><strong>11</strong> Posts</div>
+      <div class="hstat"><strong>3</strong> Days/Week</div>
+      <div class="hstat"><strong>Video + Art</strong></div>
+      <div class="hstat"><strong>FB · LI · YT</strong></div>
+    </div>
+    <div class="slim-right">Content Calendar · May 2026</div>
+  </div>
+</div>
+
+<!-- BRAND SWITCHER -->
+<div class="brand-switcher">
+  <span class="switch-label">Select Brand</span>
+  <div class="switch-track">
+    <button class="tab-btn wafs active" onclick="switchTab('wafs')">🔵 WAFS — Woodson Accounting</button>
+    <button class="tab-btn bte" onclick="switchTab('bte')">🔴 BTE — Biz Tax Experts</button>
+  </div>
+</div>
+
+<!-- WAFS -->
+<div id="wafs" class="panel wafs-panel active">
+  <div class="hero wafs-hero">
+    <div class="hero-inner">
+      <div class="hero-label">May 2026 — Content Calendar</div>
+      <h1>WAFS Content Plan<br><em>Woodson Accounting</em></h1>
+      <p class="hero-sub">Local, educational, community-focused content for Mid-Missouri business owners and high-income individuals.</p>
+      <div class="hero-stats">
+        <div class="stat"><strong>11</strong><span>Posts</span></div>
+        <div class="stat"><strong>3</strong><span>Days/Week</span></div>
+        <div class="stat"><strong>Video + Art</strong><span>Formats</span></div>
+        <div class="stat"><strong>FB · LI · YT</strong><span>Platforms</span></div>
+      </div>
+    </div>
+  </div>
+  <div class="pos-bar">
+    <div class="pos-card wafs"><div class="pos-tag">Audience</div><h4>Local Business Owners & High-Income Individuals</h4><p>Mid-Missouri community. Warm, educational, approachable tone. Key offer: Post-Tax Review.</p></div>
+    <div class="pos-card wafs-alt"><div class="pos-tag">Weekly Format</div><h4>Mon · Tue · Fri</h4><p><strong style="color:white">Monday:</strong> Promotional &nbsp;·&nbsp; <strong style="color:white">Tuesday:</strong> Tax Tip Tuesday &nbsp;·&nbsp; <strong style="color:white">Friday:</strong> Educational</p></div>
+  </div>
+  <div class="legend">
+    <span class="legend-title">Legend:</span>
+    <div class="leg"><div class="leg-dot leg-video"></div>Video</div>
+    <div class="leg"><div class="leg-dot leg-art"></div>Art / Slides</div>
+    <div class="leg"><div class="leg-icon" style="background:#1877F2"><svg viewBox="0 0 24 24" fill="white" width="10" height="10"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg></div> Facebook</div>
+    <div class="leg"><div class="leg-icon" style="background:#0A66C2"><svg viewBox="0 0 24 24" fill="white" width="10" height="10"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg></div> LinkedIn</div>
+    <div class="leg"><div class="leg-icon" style="background:#FF0000"><svg viewBox="0 0 24 24" fill="white" width="10" height="10"><path d="M23.495 6.205a3.007 3.007 0 00-2.088-2.088c-1.87-.501-9.396-.501-9.396-.501s-7.507-.01-9.396.501A3.007 3.007 0 00.527 6.205a31.247 31.247 0 00-.522 5.805 31.247 31.247 0 00.522 5.783 3.007 3.007 0 002.088 2.088c1.868.502 9.396.502 9.396.502s7.506 0 9.396-.502a3.007 3.007 0 002.088-2.088 31.247 31.247 0 00.5-5.783 31.247 31.247 0 00-.5-5.805zM9.609 15.601V8.408l6.264 3.602z"/></svg></div> YouTube (Tue only)</div>
+  </div>
+  <div class="cal-wrap">
+    <div class="cal-month-title">May 2026</div>
+    <div class="cal-header">
+      <div class="cal-day-name">Sun</div><div class="cal-day-name">Mon</div><div class="cal-day-name">Tue</div><div class="cal-day-name">Wed</div><div class="cal-day-name">Thu</div><div class="cal-day-name">Fri</div><div class="cal-day-name">Sat</div>
+    </div>
+    <div class="cal-grid" id="wafs-grid"></div>
+  </div>
+</div>
+
+<!-- BTE -->
+<div id="bte" class="panel bte-panel">
+  <div class="hero bte-hero">
+    <div class="hero-inner">
+      <div class="hero-label">May 2026 — Content Calendar</div>
+      <h1>BTE Content Plan<br><em>Biz Tax Experts</em></h1>
+      <p class="hero-sub">Strategic, industry-specific content for high-level business owners across Construction, Transportation, Tech, Real Estate & more.</p>
+      <div class="hero-stats">
+        <div class="stat"><strong>11</strong><span>Posts</span></div>
+        <div class="stat"><strong>3</strong><span>Days/Week</span></div>
+        <div class="stat"><strong>Video + Art</strong><span>Formats</span></div>
+        <div class="stat"><strong>FB · LI · YT</strong><span>Platforms</span></div>
+      </div>
+    </div>
+  </div>
+  <div class="pos-bar">
+    <div class="pos-card bte"><div class="pos-tag">Audience</div><h4>High-Level Business Owners — National</h4><p>Construction, Transportation, Tech, Real Estate, Restaurants & Startups. Strategic, direct tone. Key offer: Strategy Session.</p></div>
+    <div class="pos-card bte-alt"><div class="pos-tag">Weekly Format</div><h4>Mon · Tue · Fri</h4><p><strong style="color:white">Monday:</strong> Promotional &nbsp;·&nbsp; <strong style="color:white">Tuesday:</strong> Industry Insight &nbsp;·&nbsp; <strong style="color:white">Friday:</strong> Educational Strategic</p></div>
+  </div>
+  <div class="legend">
+    <span class="legend-title">Legend:</span>
+    <div class="leg"><div class="leg-dot leg-video"></div>Video</div>
+    <div class="leg"><div class="leg-dot leg-art"></div>Art / Slides</div>
+    <div class="leg"><div class="leg-icon" style="background:#1877F2"><svg viewBox="0 0 24 24" fill="white" width="10" height="10"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg></div> Facebook</div>
+    <div class="leg"><div class="leg-icon" style="background:#0A66C2"><svg viewBox="0 0 24 24" fill="white" width="10" height="10"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg></div> LinkedIn</div>
+    <div class="leg"><div class="leg-icon" style="background:#FF0000"><svg viewBox="0 0 24 24" fill="white" width="10" height="10"><path d="M23.495 6.205a3.007 3.007 0 00-2.088-2.088c-1.87-.501-9.396-.501-9.396-.501s-7.507-.01-9.396.501A3.007 3.007 0 00.527 6.205a31.247 31.247 0 00-.522 5.805 31.247 31.247 0 00.522 5.783 3.007 3.007 0 002.088 2.088c1.868.502 9.396.502 9.396.502s7.506 0 9.396-.502a3.007 3.007 0 002.088-2.088 31.247 31.247 0 00.5-5.783 31.247 31.247 0 00-.5-5.805zM9.609 15.601V8.408l6.264 3.602z"/></svg></div> YouTube (Tue only)</div>
+  </div>
+  <div class="cal-wrap">
+    <div class="cal-month-title">May 2026</div>
+    <div class="cal-header">
+      <div class="cal-day-name">Sun</div><div class="cal-day-name">Mon</div><div class="cal-day-name">Tue</div><div class="cal-day-name">Wed</div><div class="cal-day-name">Thu</div><div class="cal-day-name">Fri</div><div class="cal-day-name">Sat</div>
+    </div>
+    <div class="cal-grid" id="bte-grid"></div>
+  </div>
+</div>
+
+<script>
+const FB_SVG = `<svg viewBox="0 0 24 24" fill="white"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>`;
+const LI_SVG = `<svg viewBox="0 0 24 24" fill="white"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>`;
+const YT_SVG = `<svg viewBox="0 0 24 24" fill="white"><path d="M23.495 6.205a3.007 3.007 0 00-2.088-2.088c-1.87-.501-9.396-.501-9.396-.501s-7.507-.01-9.396.501A3.007 3.007 0 00.527 6.205a31.247 31.247 0 00-.522 5.805 31.247 31.247 0 00.522 5.783 3.007 3.007 0 002.088 2.088c1.868.502 9.396.502 9.396.502s7.506 0 9.396-.502a3.007 3.007 0 002.088-2.088 31.247 31.247 0 00.5-5.783 31.247 31.247 0 00-.5-5.805zM9.609 15.601V8.408l6.264 3.602z"/></svg>`;
+
+const platDef = {
+  fb: ['#1877F2', FB_SVG, 'Facebook'],
+  li: ['#0A66C2', LI_SVG, 'LinkedIn'],
+  yt: ['#FF0000', YT_SVG, 'YouTube'],
+};
+
+function iconsHTML(plats) {
+  return plats.map(p => `<div class="soc soc-${p}">${platDef[p][1]}</div>`).join('');
+}
+
+function modalPlatsHTML(plats) {
+  return plats.map(p => {
+    const [c,svg,name] = platDef[p];
+    return `<div class="modal-plat"><div class="soc" style="background:${c}">${svg}</div>${name}</div>`;
+  }).join('');
+}
+
+const wafsPosts = {
+  5:  {type:'video',format:'Tax Tip Tuesday',title:'"Tax Tip Tuesday: Q2 Estimated Taxes Are Due June 15"',hook:"If you're a business owner in Missouri — this deadline affects you directly.",cta:'Not sure how much to pay? Book a consultation with WAFS',plats:['fb','li','yt']},
+  7:  {type:'art',slides:4,format:'Promotional',title:'"Still Haven\'t Filed? Here\'s What You Need to Know."',hook:"The deadline passed — but it's not too late. Here's your next step.",cta:'File now for $150 — W-2, 1099 and more accepted',plats:['fb','li']},
+  8:  {type:'art',slides:3,format:'Promotional',title:'"Nonprofit? Your Tax Deadline Is May 15 — Are You Ready?"',hook:"Most nonprofits don't realize they have a filing requirement. Do you?",cta:'Contact WAFS — we handle nonprofit filings',plats:['fb','li']},
+  12: {type:'video',format:'Tax Tip Tuesday',title:'"Tax Tip Tuesday: What Happens If You Filed an Extension?"',hook:"An extension gives you more time to file — not more time to pay. Here's what that means.",cta:'Follow WAFS for weekly tax tips every Tuesday',plats:['fb','li','yt']},
+  14: {type:'art',format:'Promotional',title:'"You Filed. But Did You Leave Money on the Table?"',hook:"Filing your taxes is step one. Reviewing them is where the real savings begin.",cta:'Schedule your Post-Tax Review with WAFS today',plats:['fb','li']},
+  15: {type:'video',format:'Educational',title:'"3 Things Every Local Business Owner Should Do After Tax Season"',hook:"Tax season is over — but the work isn't. Here's what to do now.",cta:'Schedule a Post-Tax Review with Woodson Accounting today',plats:['fb','li']},
+  19: {type:'video',format:'Tax Tip Tuesday',title:'"Tax Tip Tuesday: Clean Books = Lower Tax Bill"',hook:"Disorganized finances don't just cause stress — they cost you money at tax time.",cta:'Follow WAFS for a new tax tip every Tuesday',plats:['fb','li','yt']},
+  22: {type:'video',format:'Educational',title:'"What Are Estimated Taxes and Do You Need to Pay Them?"',hook:"Most local business owners don't know they owe quarterly taxes — until they get a penalty.",cta:"Book a free consultation with WAFS — we'll walk you through it",plats:['fb','li']},
+  26: {type:'video',format:'Tax Tip Tuesday',title:'"Tax Tip Tuesday: Are You Ready for Q2 Estimated Taxes?"',hook:"June 15 is closer than you think — here's a simple 3-step checklist to make sure you're prepared.",cta:'Not sure where to start? Book a free call with WAFS today',plats:['fb','li','yt']},
+  28: {type:'art',slides:5,format:'Promotional',title:'"Self-Employed? Your Tax Return Is More Complex Than You Think"',hook:"One missed deduction can cost you hundreds. Let's make sure yours is done right.",cta:'Book your Self-Employment Return — $600 flat rate',plats:['fb','li']},
+  29: {type:'art',slides:4,format:'Educational',title:'"5 Signs Your Business Needs a Tax Strategy — Not Just a Tax Preparer"',hook:"If any of these 5 signs apply to you — you're leaving money on the table every single year.",cta:'Schedule a consultation with Woodson Accounting — link in bio',plats:['fb','li']},
+};
+
+const btePosts = {
+  5:  {type:'video',format:'Industry Insight',title:'"Transportation Business Owners: Are You Filing Form 2290?"',hook:"If your vehicles weigh over 55,000 lbs and you're not filing Form 2290 — your company is already non-compliant.",cta:'Follow BTE every Tuesday for industry-specific tax insights',plats:['fb','li','yt']},
+  7:  {type:'art',slides:4,format:'Industry Insight',title:'"Restaurant Owners: Are You Tracking Tips and Payroll Correctly?"',hook:"Tip reporting errors are one of the top IRS audit triggers for restaurants — here's what to check right now.",cta:'Book a payroll compliance review with BTE today',plats:['fb','li']},
+  8:  {type:'art',slides:3,format:'Educational Strategic',title:'"5 Tax Mistakes Construction & Transportation Companies Make Every Year"',hook:"These 5 mistakes cost business owners in your industry thousands every year — and most don't even know they're making them.",cta:'Schedule a strategy session with Biz Tax Experts',plats:['fb','li']},
+  12: {type:'video',format:'Industry Insight',title:'"Construction Companies: Q2 Estimated Taxes Are Due June 15"',hook:"Cash flow is already tight in construction — missing this payment makes it worse and adds penalties on top.",cta:'Book a cash flow and tax planning session with BTE',plats:['fb','li','yt']},
+  14: {type:'art',format:'Promotional',title:'"Filed Your Taxes? Now Let\'s Make Sure You Didn\'t Overpay."',hook:"Business owners generating real revenue don't just file — they review, adjust, and plan. Are you doing that?",cta:'Book your Post-Tax Strategy Session with Biz Tax Experts',plats:['fb','li']},
+  15: {type:'video',format:'Educational Strategic',title:'"LLC vs S-Corp: Which One Actually Saves You More Money in 2026?"',hook:"At $500K in revenue, the difference between LLC and S-Corp taxation isn't small — it can be tens of thousands of dollars per year.",cta:'Book an entity review with BTE today',plats:['fb','li']},
+  19: {type:'video',format:'Industry Insight',title:'"Tech Founders: Your Entity Structure Could Be Costing You Thousands"',hook:"Most tech founders choose an LLC because someone told them to — without running the numbers. At your revenue level, that decision could be costing you every year.",cta:'Follow BTE for weekly industry insights every Tuesday',plats:['fb','li','yt']},
+  22: {type:'video',format:'Educational Strategic',title:'"How High-Revenue Business Owners Manage Quarterly Tax Payments"',hook:"The goal isn't just paying on time — it's paying the right amount so your cash flow stays strong while you scale.",cta:'Book a tax strategy session with Biz Tax Experts',plats:['fb','li']},
+  26: {type:'video',format:'Industry Insight',title:'"Real Estate Investors: Are You Using Cost Segregation to Reduce Your Tax Bill?"',hook:"Most real estate investors know about depreciation — but almost none use cost segregation. Here's how much money that's costing you.",cta:'Follow BTE every Tuesday for industry-specific tax strategy',plats:['fb','li','yt']},
+  28: {type:'art',slides:5,format:'Promotional',title:'"Is Your Payroll Actually Set Up Correctly?"',hook:"Most construction and transportation companies set up payroll once and never reviewed it again — that's exactly how IRS penalties happen.",cta:'Switch to SurePayroll through BTE — goal closes in June',plats:['fb','li']},
+  29: {type:'art',slides:4,format:'Educational Strategic',title:'"Why Your Business Needs a Tax Strategy — Not Just a Tax Preparer"',hook:"There's a real difference between a company that files taxes and a company that plans them. One of them is paying significantly more than they should.",cta:'Schedule your free strategy consultation with Biz Tax Experts',plats:['fb','li']},
+};
+
+const DAY_NAMES = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+
+function buildCalendar(gridId, posts) {
+  const grid = document.getElementById(gridId);
+  const startDay = 5; // May 2026 starts on Friday
+  for (let i = 0; i < startDay; i++) {
+    const e = document.createElement('div');
+    e.className = 'cal-cell empty';
+    grid.appendChild(e);
+  }
+  for (let d = 1; d <= 31; d++) {
+    const dow = (startDay + d - 1) % 7;
+    const cell = document.createElement('div');
+    cell.className = 'cal-cell';
+    const post = posts[d];
+    const num = document.createElement('div');
+    num.className = 'cell-num' + (post ? ' has-post' : '');
+    num.textContent = d;
+    cell.appendChild(num);
+    if (post) {
+      const chip = document.createElement('button');
+      chip.className = 'post-chip chip-' + post.type;
+      chip.onclick = () => openModal(d, post, DAY_NAMES[dow]);
+      chip.innerHTML = `
+        <div class="chip-top">
+          <span class="chip-tag">${post.type==='video'?'📹 Video':'🎨 Art'}</span>
+          ${post.slides?`<span class="chip-slides">${post.slides} slides</span>`:''}
+        </div>
+        <div class="chip-title">${post.title}</div>
+        <div class="chip-format">${post.format}</div>
+        <div class="chip-icons">${iconsHTML(post.plats)}</div>
+      `;
+      cell.appendChild(chip);
+    }
+    grid.appendChild(cell);
+  }
+}
+
+function openModal(day, post, dayName) {
+  document.getElementById('m-meta').textContent = `May ${day}, 2026 · ${dayName}`;
+  document.getElementById('m-title').textContent = post.title;
+  document.getElementById('m-hook').textContent = post.hook;
+  document.getElementById('m-cta').textContent = post.cta;
+  const brand = document.querySelector('.panel.active').id;
+  document.getElementById('m-tags').innerHTML =
+    `<span class="mtag ${post.type}">${post.type==='video'?'📹 Video':'🎨 Art'}</span>` +
+    (post.slides?`<span class="mtag slides">${post.slides} Slides</span>`:'') +
+    `<span class="mtag ${brand}">${post.format}</span>`;
+  document.getElementById('m-plats').innerHTML = modalPlatsHTML(post.plats);
+  document.getElementById('modal').classList.add('open');
+}
+
+function closeModal() { document.getElementById('modal').classList.remove('open'); }
+function closeOut(e) { if(e.target===document.getElementById('modal')) closeModal(); }
+
+function switchTab(tab) {
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelector('.tab-btn.'+tab).classList.add('active');
+  document.getElementById(tab).classList.add('active');
+  // swap header logo
+  document.getElementById('header-logo-wafs').classList.toggle('hidden', tab !== 'wafs');
+  document.getElementById('header-logo-bte').classList.toggle('hidden', tab !== 'bte');
+}
+
+buildCalendar('wafs-grid', wafsPosts);
+buildCalendar('bte-grid', btePosts);
+</script>
+</body>
+</html>
